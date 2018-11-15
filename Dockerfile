@@ -1,4 +1,4 @@
-FROM golang:1.10 as builder
+FROM golang:1.11.2 as builder
 
 COPY . $GOPATH/src/gofunky/envtpl/
 WORKDIR $GOPATH/src/gofunky/envtpl/
