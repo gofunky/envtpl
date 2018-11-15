@@ -1,24 +1,18 @@
 # envtpl
-_a port of https://github.com/andreasjansson/envtpl to Go_
 
-```
+An always-updating Alpine Docker image containing envtpl
+
+![Docker Build Status](https://img.shields.io/docker/build/:gofunky/:envtpl.svg)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=gofunky/envtpl)](https://dependabot.com)
+[![Microbadger Version](https://images.microbadger.com/badges/version/gofunky/envtpl.svg)](https://microbadger.com/images/gofunky/envtpl "Docker Version")
+[![Microbadger Layers](https://images.microbadger.com/badges/image/gofunky/envtpl.svg)](https://microbadger.com/images/gofunky/envtpl "Docker Layers")
+[![Docker Pulls](https://img.shields.io/docker/pulls/gofunky/envtpl.svg)](https://hub.docker.com/r/gofunky/envtpl)
+![GitHub last commit](https://img.shields.io/github/last-commit/gofunky/envtpl.svg)
+[![GitHub License](https://img.shields.io/github/license/gofunky/envtpl.svg)](https://github.com/gofunky/envtpl/blob/master/LICENSE)
+
+## Usage
+
+```bash
 $ envtpl something.conf.tpl
 ```
 
-Add to your `Dockerfile`:
-
-```dockerfile
-ENV ENVTPL_VERSION 0.2.0
-RUN set -x \
-    && apt-get update && apt-get install -y --no-install-recommends ca-certificates wget && rm -rf /var/lib/apt/lists/* \
-    && dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
-    && wget -O /usr/local/bin/envtpl "https://github.com/mattrobenolt/envtpl/releases/download/$ENVTPL_VERSION/envtpl-linux-$dpkgArch" \
-    && wget -O /usr/local/bin/envtpl.asc "https://github.com/mattrobenolt/envtpl/releases/download/$ENVTPL_VERSION/envtpl-linux-$dpkgArch.asc" \
-    && export GNUPGHOME="$(mktemp -d)" \
-    && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys D8749766A66DD714236A932C3B2D400CE5BBCA60 \
-    && gpg --batch --verify /usr/local/bin/envtpl.asc /usr/local/bin/envtpl \
-    && rm -r "$GNUPGHOME" /usr/local/bin/envtpl.asc \
-    && chmod +x /usr/local/bin/envtpl \
-    && envtpl --help \
-    && apt-get purge -y --auto-remove ca-certificates wget
-```
