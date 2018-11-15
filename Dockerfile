@@ -1,20 +1,17 @@
-FROM golang:1.10
+FROM golang:1.10 as builder
 
-RUN mkdir -p /go/src/app
-WORKDIR /go/src/app
+COPY . $GOPATH/src/gofunky/envtpl/
+WORKDIR $GOPATH/src/gofunky/envtpl/
 
-ENV CROSSPLATFORMS \
-        linux/amd64 linux/386 linux/arm \
-        darwin/amd64 darwin/386 \
-        freebsd/amd64 freebsd/386 freebsd/arm \
-        windows/amd64 windows/386
+ENV GOOS=linux
+ENV GOARCH=amd64
 
-ENV GOARM 5
+RUN go get -v -d
+RUN go build -v -o /go/bin/envtpl
 
-CMD set -x \
-    && go-wrapper download \
-    && for platform in $CROSSPLATFORMS; do \
-            GOOS=${platform%/*} \
-            GOARCH=${platform##*/} \
-                go build -v -o bin/envtpl-${platform%/*}-${platform##*/}; \
-    done
+FROM gofunky/git:stable
+
+COPY --from=builder /go/bin/envtpl /usr/local/bin/envtpl
+RUN chmod +x /usr/local/bin/envtpl
+
+ENTRYPOINT ["/usr/local/bin/envtpl"]
