@@ -9,7 +9,7 @@ ENV GOARCH=amd64
 RUN go get -v -d
 RUN go build -v -o /go/bin/envtpl
 
-FROM gofunky/git:2.18.2
+FROM gofunky/git:2.18.3
 LABEL maintainer="mat@fax.fyi"
 
 COPY --from=builder /go/bin/envtpl /usr/local/bin/envtpl
